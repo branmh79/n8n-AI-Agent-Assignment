@@ -1,38 +1,421 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* General Styles */
+body {
+  margin: 0;
+  font-family: "Arial", sans-serif;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-items: center;
+  height: 100vh;
+  transition: background-color 0.3s ease;
+}
+
+/* Header Title with Icon */
+.title {
+  display: flex;
+  align-items: center;
+}
+
+.ai-icon {
+  width: 30.25px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.profile-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+
+.session-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.session-id {
+  font-size: 12px;
+  font-style: italic;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+body.light-mode {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+body.dark-mode {
+  background-color: #181818;
+  color: #e0e0e0;
+}
+
+.light-mode {
+  background-color: #eaeaea;
+  color: #333;
+}
+
+.light-mode .chat-container {
+  background-color: #ffffff;
+  border: 0px solid #ccc;
+}
+
+.light-mode .chat-header {
+  background-color: #f8f8f8;
+  border-bottom: 0px solid #ccc;
+}
+
+/* Light Mode Input Box */
+.light-mode .chat-input {
+  background-color: #f8f8f8; /* More contrast from background */
+  border-top: 0px solid #ccc; /* Stronger separation from chat */
+}
+
+.light-mode .chat-input input {
+  background-color: #ffffff; /* Keep input bright */
+  border: 1px solid #bbb; /* More defined border */
+}
+
+.light-mode .chat-input button {
+  background-color: #007bff;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.light-mode .chat-input button:hover {
+  background-color: #0056b3;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Light Mode Buttons */
+.light-mode .new-session-btn,
+.light-mode .toggle-mode-btn,
+.light-mode .chat-input button,
+.light-mode .dropdown-btn,
+.light-mode .chat-message.user {
+  background-color: #007bff !important; /* Blue */
+  color: white;
+}
+
+.light-mode .new-session-btn:hover,
+.light-mode .toggle-mode-btn:hover,
+.light-mode .chat-input button:hover,
+.light-mode .dropdown-btn:hover {
+  background-color: #0056b3 !important; /* Darker Blue */
+}
+
+/* Dark Mode Buttons */
+.dark-mode .new-session-btn,
+.dark-mode .toggle-mode-btn,
+.dark-mode .chat-input button,
+.dark-mode .dropdown-btn,
+.dark-mode .chat-message.user {
+  background-color: #4caf50 !important; /* Green */
+  color: white;
+}
+
+.dark-mode .new-session-btn:hover,
+.dark-mode .toggle-mode-btn:hover,
+.dark-mode .chat-input button:hover,
+.dark-mode .dropdown-btn:hover {
+  background-color: #45a049 !important; /* Darker Green */
+}
+
+/* Light Mode Dropdown */
+.light-mode .dropdown-content {
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+}
+
+.light-mode .dropdown-content div {
+  color: #333;
+}
+
+.light-mode .dropdown-content div:hover {
+  background-color: #e0e0e0;
+}
+
+/* Dark Mode Dropdown */
+.dark-mode .dropdown-content {
+  background-color: #333;
+  border: 1px solid #444;
+}
+
+.dark-mode .dropdown-content div {
+  color: #e0e0e0;
+}
+
+.dark-mode .dropdown-content div:hover {
+  background-color: #444;
+}
+
+/* Bot Message in Light Mode */
+.light-mode .chat-message.bot {
+  background-color: #DADADA; /* Light gray background */
+  color: #333; /* Dark text */
+}
+
+/* Bot Message in Dark Mode (Keep as is) */
+.dark-mode .chat-message.bot {
+  background-color: #3F3F3F; /* Dark gray background */
+  color: #e0e0e0; /* Light text */
+}
+
+/* Dark Mode */
+.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.dark-mode .chat-container {
+  background-color: #1f1f1f;
+}
+
+.dark-mode .chat-input input {
+  background-color: #333;
+  color: #e0e0e0;
+}
+
+.dark-mode .chat-input button {
+  background-color: #4caf50;
+}
+
+.dark-mode .chat-input button:hover {
+  background-color: #45a049;
+}
+
+/* Chat App Container */
+.app-container {
+  width: 60vw;
+  height: 100vh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Header */
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: inherit;
+}
+
+.chat-header h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.chat-input {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #444;
+}
+
+.new-session-btn,
+.toggle-mode-btn {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.new-session-btn:hover,
+.toggle-mode-btn:hover {
+  background-color: #45a049;
+}
+
+/* Chat Container */
+.chat-container {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.3s ease;
+}
+
+.chat-message {
+  display: flex;
+  align-items: center;
+  max-width: 80%;
+  margin-bottom: 10px;
+  padding: 0px 8px;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.chat-message.user {
+  align-self: flex-end; /* Aligns the message container to the right */
+  background-color: #4caf50;
+  color: white;
+  display: flex; /* Ensures text and icon are in the same row */
+  justify-content: space-between; /* Space items evenly */
+  align-items: center; /* Centers icon vertically with text */
+  padding: 5px 10px;
+  border-radius: 8px;
+}
+
+
+.chat-message.bot {
+  align-self: flex-start;
+  padding: 5px 10px;
+  background-color: #333;
+  color: #e0e0e0;
+}
+
+.chat-message p {
+  margin: 0;
+  padding: 5px 0;
+}
+
+.loading {
+  align-self: center;
+  font-style: italic;
+}
+
+/* Input Section */
+.chat-input {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #444;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.chat-input button {
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Aligns the toggle and text/icon */
+.toggle-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 5px; /* Space between icon/text and switch */
+  padding-left: 5px;
+}
+
+/* Style for the mode icon */
+.mode-icon {
+  font-size: 18px;
+}
+
+/* Style for Light/Dark Mode Text */
+.toggle-label {
+  font-size: 14px;
+  font-weight: bold;
+  opacity: 0.8;
+}
+
+/* Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 20px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #4caf50;
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* Dropdown Styles */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-btn {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.dropdown-content {
+  display: block;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 150px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border-radius: 5px;
+  bottom: 50px; /* Position above the button */
+  left: 0;
+  transform: translateY(-10px); /* Add space above the dropdown */
+}
+
+.dropdown-content div {
+  padding: 8px 12px;
+  cursor: pointer;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+}
+
+.dropdown-content div:last-child {
+  border-bottom: none; /* Remove border for the last item */
+}
+
+.dropdown-content div:hover {
+  background-color: #f1f1f1;
 }
