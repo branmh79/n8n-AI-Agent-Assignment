@@ -176,20 +176,26 @@ body.dark-mode {
 }
 
 .app-container {
-  width: 60vw;
+  width: 100vw;
   height: 100vh;
   margin: 0 auto;
   display: flex;
-  flex-direction: column;
+  justify-content: center; /* Center the content horizontally */
+  align-items: center; /* Center the content vertically */
+  background-color: var(--background-color); /* Optional for readability */
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .chat-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  background-color: inherit;
+  width: 100%; /* Full width of the chat section */
+  padding: 10px 20px;
+  background-color: inherit; /* Match the background color */
+  color: inherit; /* Match the text color */
+  border-bottom: 1px solid #444; /* Optional border for separation */
+  font-size: 14px;
+  font-style: italic; /* Optional styling for the session ID */
+  text-align: left; /* Align the text to the left */
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .chat-header h1 {
@@ -197,10 +203,21 @@ body.dark-mode {
   font-size: 22px;
 }
 
+/* Chat Section */
+.chat-section {
+  width: 70%; /* Fixed 60% width */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: #181818; /* Matches dark mode background */
+  border-left: 1px solid #4B4C4C; /* Thin white line between left and chat */
+}
+
 .chat-input {
   display: flex;
   padding: 10px;
   border-top: 1px solid #444;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .new-session-btn,
@@ -213,6 +230,11 @@ body.dark-mode {
   cursor: pointer;
   font-size: 14px;
   margin-left: 10px;
+}
+
+.new-session-btn {
+  padding: 5px 15px;
+  font-size: 14px;
 }
 
 .new-session-btn:hover,
@@ -236,7 +258,7 @@ body.dark-mode {
   margin-bottom: 10px;
   padding: 0px 8px;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 18px;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -271,14 +293,14 @@ body.dark-mode {
 
 .chat-input {
   display: flex;
-  padding: 10px;
+  padding: 20px;
   border-top: 1px solid #444;
 }
 
 .chat-input input {
   flex: 1;
   padding: 10px;
-  font-size: 14px;
+  font-size: 16px;
   border: none;
   border-radius: 5px;
   margin-right: 10px;
@@ -287,19 +309,28 @@ body.dark-mode {
 
 .chat-input button {
   padding: 10px 20px;
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
   border: none;
   border-radius: 5px;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+.session-toggle-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Space out the elements */
+  gap: 10px; /* Add spacing between them */
+}
+
 .toggle-container {
   display: flex;
   align-items: center;
-  flex-direction: column;
   gap: 5px;
-  padding-left: 5px;
+}
+
+.switch {
+  margin: 0; /* Remove extra spacing */
 }
 
 .mode-icon {
@@ -369,7 +400,7 @@ input:checked + .slider:before {
   border-radius: 5px;
   padding: 10px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 20px;
   margin-right: 10px;
 }
 
@@ -440,4 +471,70 @@ input:checked + .slider:before {
 
 .light-mode .chat-container {
   scrollbar-color: #007bff #e0e0e0;
+}
+
+/* Layout Container */
+.layout-container {
+  width: 100vw; /* Desired width for the chat and left sections combined */
+  height: 100%; /* Take full vertical height */
+  display: flex;
+  gap: 0px;
+  background-color: inherit; /* Maintain the background color */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Optional shadow effect */
+}
+
+/* Left Section */
+.left-section {
+  width: 15%; /* Allocate 20% width to the left section */
+  background-color: #1f1f1f; /* Dark background for contrast */
+  color: #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  border-right: 1px solid 4B4C4C; /* Thin white line for dark mode */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Right Section */
+.right-section {
+  width: 15%; /* Fixed 20% width */
+  background-color: #1f1f1f; /* Dark background */
+  color: #e0e0e0; /* Text color */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  border-left: 1px solid #4B4C4C; /* Thin white line for dark mode */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.light-mode .right-section {
+  background-color: #f8f8f8; /* Light mode background */
+  color: #333; /* Text color for light mode */
+}
+
+.light-mode .left-section {
+  background-color: #f8f8f8;
+  color: #333;
+}
+
+.light-mode .left-section,
+.light-mode .chat-section,
+.light-mode .right-section {
+  border-color: #B5B7B7; /* Thin black line for light mode */
+}
+
+/* Chat Container */
+.chat-container {
+  flex: 1; /* Take the remaining width */
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 15px;
+  background-color: #181818; /* Matches dark mode background */
+}
+
+.light-mode .chat-container {
+  background-color: #ffffff;
 }

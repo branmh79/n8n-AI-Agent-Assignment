@@ -46,7 +46,6 @@ const App = () => {
     };
   }, []);
 
-  // Auto-scroll to bottom when chatHistory updates
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
@@ -85,28 +84,6 @@ const App = () => {
     setQuery("");
   };
 
-  const formatNewsResponse = (finalResponse) => {
-    const lines = finalResponse.split("\n").filter((line) => line.startsWith("-"));
-    return (
-      <div className="news-container">
-        {lines.map((line, index) => {
-          const match = line.match(/-\s(.+?)\s\((.+?)\):\s(https?:\/\/[^\s]+)/);
-          if (!match) return null;
-
-          const [, title, date, link] = match;
-          return (
-            <div key={index} className="news-item">
-              <a href={link} target="_blank" rel="noopener noreferrer" className="news-title">
-                <strong>📌 {title}</strong>
-              </a>
-              <p className="news-meta">🕒 {date}</p>
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!query.trim()) return;
@@ -141,14 +118,9 @@ const App = () => {
       }
 
       const data = await result.json();
-      const formattedText =
-        pendingPromptType === "News"
-          ? formatNewsResponse(data[0]?.finalResponse || "")
-          : data[0]?.finalResponse;
-
       const botMessage = {
         sender: "bot",
-        text: formattedText,
+        text: data[0]?.finalResponse || "No response received.",
         icon: aiIcon,
       };
 
@@ -167,16 +139,67 @@ const App = () => {
 
   return (
     <div className={`app-container ${isDarkMode ? "dark-mode" : "light-mode"}`}>
-      <div className="chat-header">
-        <div className="title">
-          <img src={aiIcon} alt="AI Icon" className="ai-icon" />
-          <h1>AI Agent</h1>
-        </div>
-        <div className="session-container">
-          <p className="session-id">Session ID: {sessionId}</p>
+      <div className="layout-container">
+        {/* Left Sidebar */}
+        <div className="left-section">
+          <div className="title">
+            <img src={aiIcon} alt="AI Icon" className="ai-icon" />
+            <h1>AI Agent</h1>
+          </div>
           <button className="new-session-btn" onClick={handleNewSession}>
             New Session
           </button>
+        </div>
+
+        {/* Chat Section */}
+        <div className="chat-section">
+          <div className="chat-header">Session ID: {sessionId}</div>
+          <div className="chat-container" ref={chatContainerRef}>
+            {chatHistory.map((message, index) => (
+              <div
+                key={index}
+                className={`chat-message ${message.sender === "user" ? "user" : "bot"}`}
+              >
+                {message.sender === "bot" && (
+                  <img src={aiIcon} alt="Bot Icon" className="profile-icon" />
+                )}
+                <div>{message.text}</div>
+              </div>
+            ))}
+            {loading && <div className="loading">Bot is typing...</div>}
+          </div>
+          <form className="chat-input" onSubmit={handleSubmit}>
+            <div className="dropdown" ref={dropdownRef}>
+              <button
+                type="button"
+                className="dropdown-btn"
+                onClick={() => setShowDropdown((prev) => !prev)}
+              >
+                +
+              </button>
+              {showDropdown && (
+                <div className="dropdown-content">
+                  <div onClick={() => handlePromptSelection("Calculate")}>Calculate</div>
+                  <div onClick={() => handlePromptSelection("Weather")}>Weather</div>
+                  <div onClick={() => handlePromptSelection("News")}>News</div>
+                </div>
+              )}
+            </div>
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Type your message..."
+            />
+            <button type="submit" disabled={!query.trim()}>
+              Send
+            </button>
+          </form>
+        </div>
+
+        {/* Right Sidebar */}
+        <div className="right-section">
+          <h2>Customization</h2>
           <div className="toggle-container">
             <span className="mode-icon">{isDarkMode ? "🌙" : "☀️"}</span>
             <label className="switch">
@@ -186,31 +209,6 @@ const App = () => {
           </div>
         </div>
       </div>
-      <div className="chat-container" ref={chatContainerRef}>
-        {chatHistory.map((message, index) => (
-          <div key={index} className={`chat-message ${message.sender === "user" ? "user" : "bot"}`}>
-            {message.sender === "bot" && <img src={aiIcon} alt="Bot Icon" className="profile-icon" />}
-            <div>{typeof message.text === "string" ? message.text : message.text}</div>
-          </div>
-        ))}
-        {loading && <div className="loading">Bot is typing...</div>}
-      </div>
-      <form className="chat-input" onSubmit={handleSubmit}>
-        <div className="dropdown" ref={dropdownRef}>
-          <button type="button" className="dropdown-btn" onClick={() => setShowDropdown((prev) => !prev)}>
-            +
-          </button>
-          {showDropdown && (
-            <div className="dropdown-content">
-              <div onClick={() => handlePromptSelection("Calculate")}>Calculate</div>
-              <div onClick={() => handlePromptSelection("Weather")}>Weather</div>
-              <div onClick={() => handlePromptSelection("News")}>News</div>
-            </div>
-          )}
-        </div>
-        <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Type your message..." />
-        <button type="submit" disabled={!query.trim()}>Send</button>
-      </form>
     </div>
   );
 };
