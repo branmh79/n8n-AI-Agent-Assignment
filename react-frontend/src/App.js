@@ -195,40 +195,40 @@ const App = () => {
     };
   }, []);
 
-  const formatNewsResponse = (finalResponse) => {
-    if (!finalResponse) return <p>No news available.</p>;
+const formatNewsResponse = (finalResponse) => {
+  if (!finalResponse) return <p>No news available.</p>;
+
+  // Extract lines that contain news articles
+  const lines = finalResponse.split("\n").filter(line => line.startsWith("-"));
   
-    // Extract lines that contain news articles
-    const lines = finalResponse.split("\n").filter(line => line.startsWith("-"));
-    
-    return (
-      <div className="news-container">
-        {lines.map((line, index) => {
-          // Extract title, date, and link properly
-          const match = line.match(/-\s(.+?)\s\((.+?)\):\s(https?:\/\/[^\s]+)/);
-          
-          if (!match) return null; // Skip malformed entries
-          
-          let [, title, date, link] = match;
-  
-          // Fix malformed URLs (if any)
-          if (link.startsWith('"https":')) {
-            link = link.replace('"https":', 'https:').replace(/"/g, '');
-          }
-  
-          return (
-            <div key={index} className="news-item">
-              <a href={link} target="_blank" rel="noopener noreferrer" className="news-title">
-                <strong>📌 {title}</strong>
-              </a>
-              <p className="news-meta">🕒 {date}</p>
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
-  
+  return (
+    <div className="news-container">
+      {lines.map((line, index) => {
+        // Extract title, date, and link properly
+        const match = line.match(/-\s(.+?)\s\((.+?)\):\s(https?:\/\/[^\s]+)/);
+        
+        if (!match) return null; // Skip malformed entries
+        
+        let [, title, date, link] = match;
+
+        // Fix malformed URLs (if any)
+        if (link.startsWith('"https":')) {
+          link = link.replace('"https":', 'https:').replace(/"/g, '');
+        }
+
+        return (
+          <div key={index} className="news-item">
+            <a href={link} target="_blank" rel="noopener noreferrer" className="news-title">
+              <strong>📌 {title}</strong>
+            </a>
+            <p className="news-meta">🕒 {date}</p>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
   
 
   
