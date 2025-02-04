@@ -219,7 +219,7 @@ const formatNewsResponse = (finalResponse) => {
         return (
           <div key={index} className="news-item">
             <a href={link} target="_blank" rel="noopener noreferrer" className="news-title">
-              <strong>📌 {title}</strong>
+              📌 {title}
             </a>
             <p className="news-meta">🕒 {date}</p>
           </div>
