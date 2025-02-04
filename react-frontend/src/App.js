@@ -24,20 +24,25 @@ const App = () => {
   const chatContainerRef = useRef(null);
 
   useEffect(() => {
-    const storedSessionId = localStorage.getItem("sessionId");
-    const storedConversations = JSON.parse(localStorage.getItem("pastConversations")) || [];
+    // Clear past conversations from localStorage on page refresh
+    localStorage.removeItem("pastConversations");
+    setPastConversations([]); // Reset UI state
   
-    setPastConversations(storedConversations);
+    // Retrieve stored session ID if it exists
+    const storedSessionId = localStorage.getItem("sessionId");
   
     if (storedSessionId) {
-      const existingConversation = storedConversations.find(
-        (conv) => conv.sessionId === storedSessionId
-      );
       setSessionId(storedSessionId);
-      setSessionTitle(existingConversation?.sessionTitle || storedSessionId);
-      setChatHistory(existingConversation?.chatHistory || []);
+      setSessionTitle(storedSessionId);
+      setChatHistory([]);
+    } else {
+      const newSessionId = generateUUID();
+      localStorage.setItem("sessionId", newSessionId);
+      setSessionId(newSessionId);
+      setSessionTitle(newSessionId);
     }
   }, []);
+  
 
   useEffect(() => {
     document.body.className = isDarkMode ? "dark-mode" : "light-mode";
