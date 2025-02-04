@@ -245,7 +245,7 @@ const App = () => {
           </div>
 
           <button className="new-session-btn" onClick={handleNewSession}>
-            New Session
+            New Conversation
           </button>
 
           <h3 className="recent-header">Recent Conversations</h3>
