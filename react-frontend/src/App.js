@@ -26,19 +26,17 @@ const App = () => {
   useEffect(() => {
     const storedSessionId = localStorage.getItem("sessionId");
     const storedConversations = JSON.parse(localStorage.getItem("pastConversations")) || [];
+  
+    setPastConversations(storedConversations);
+  
     if (storedSessionId) {
-      setSessionId(storedSessionId);
       const existingConversation = storedConversations.find(
         (conv) => conv.sessionId === storedSessionId
       );
+      setSessionId(storedSessionId);
       setSessionTitle(existingConversation?.sessionTitle || storedSessionId);
-    } else {
-      const newSessionId = generateUUID();
-      localStorage.setItem("sessionId", newSessionId);
-      setSessionId(newSessionId);
-      setSessionTitle(newSessionId);
+      setChatHistory(existingConversation?.chatHistory || []);
     }
-    setPastConversations(storedConversations);
   }, []);
 
   useEffect(() => {
@@ -128,10 +126,26 @@ const App = () => {
   
 
   const loadConversation = (conversation) => {
+    if (!conversation || !conversation.sessionId) {
+      console.error("Invalid conversation selected");
+      return;
+    }
+  
+    // Save current session before switching
+    if (chatHistory.length > 0) {
+      const updatedConversations = pastConversations.map((conv) =>
+        conv.sessionId === sessionId ? { ...conv, chatHistory } : conv
+      );
+      localStorage.setItem("pastConversations", JSON.stringify(updatedConversations));
+      setPastConversations(updatedConversations);
+    }
+  
+    // Load new session
     setSessionId(conversation.sessionId);
-    setSessionTitle(conversation.sessionTitle);
-    setChatHistory(conversation.chatHistory);
+    setSessionTitle(conversation.sessionTitle || conversation.sessionId);
+    setChatHistory(conversation.chatHistory || []);
   };
+  
 
   const deleteConversation = (sessionIdToDelete) => {
     const updatedConversations = pastConversations.filter(
@@ -182,14 +196,26 @@ const App = () => {
   }, []);
 
   const formatNewsResponse = (finalResponse) => {
-    const lines = finalResponse.split("\n").filter((line) => line.startsWith("-"));
+    if (!finalResponse) return <p>No news available.</p>;
+  
+    // Extract lines that contain news articles
+    const lines = finalResponse.split("\n").filter(line => line.startsWith("-"));
+    
     return (
       <div className="news-container">
         {lines.map((line, index) => {
+          // Extract title, date, and link properly
           const match = line.match(/-\s(.+?)\s\((.+?)\):\s(https?:\/\/[^\s]+)/);
-          if (!match) return null;
-
-          const [, title, date, link] = match;
+          
+          if (!match) return null; // Skip malformed entries
+          
+          let [, title, date, link] = match;
+  
+          // Fix malformed URLs (if any)
+          if (link.startsWith('"https":')) {
+            link = link.replace('"https":', 'https:').replace(/"/g, '');
+          }
+  
           return (
             <div key={index} className="news-item">
               <a href={link} target="_blank" rel="noopener noreferrer" className="news-title">
@@ -202,6 +228,7 @@ const App = () => {
       </div>
     );
   };
+  
   
 
   
@@ -342,17 +369,16 @@ const App = () => {
         <div className="chat-section">
           <div className="chat-header">{sessionTitle}</div>
           <div className="chat-container" ref={chatContainerRef}>
-            {chatHistory.map((message, index) => (
-              <div
-                key={index}
-                className={`chat-message ${message.sender === "user" ? "user" : "bot"}`}
-              >
-                {message.sender === "bot" && (
-                  <img src={aiIcon} alt="Bot Icon" className="profile-icon" />
-                )}
+          {chatHistory.length > 0 ? (
+            chatHistory.map((message, index) => (
+              <div key={index} className={`chat-message ${message.sender === "user" ? "user" : "bot"}`}>
+                {message.sender === "bot" && <img src={aiIcon} alt="Bot Icon" className="profile-icon" />}
                 <div>{message.text}</div>
               </div>
-            ))}
+            ))
+          ) : (
+            <p className="empty-chat">No messages yet. Start the conversation!</p>
+          )}
             {loading && <div className="loading">Bot is typing...</div>}
           </div>
           <form className="chat-input" onSubmit={handleSubmit}>
