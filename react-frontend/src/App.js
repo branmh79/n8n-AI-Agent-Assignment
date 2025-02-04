@@ -180,14 +180,38 @@ const App = () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, []);
+
+  const formatNewsResponse = (finalResponse) => {
+    const lines = finalResponse.split("\n").filter((line) => line.startsWith("-"));
+    return (
+      <div className="news-container">
+        {lines.map((line, index) => {
+          const match = line.match(/-\s(.+?)\s\((.+?)\):\s(https?:\/\/[^\s]+)/);
+          if (!match) return null;
+
+          const [, title, date, link] = match;
+          return (
+            <div key={index} className="news-item">
+              <a href={link} target="_blank" rel="noopener noreferrer" className="news-title">
+                <strong>📌 {title}</strong>
+              </a>
+              <p className="news-meta">🕒 {date}</p>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+  
+
   
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!query.trim()) return;
-
+  
     const userMessage = { sender: "user", text: query };
     setChatHistory((prev) => [...prev, userMessage]);
-
+  
     let formattedQuery = query;
     if (pendingPromptType === "Calculate") {
       formattedQuery = `Calculate ${query}`;
@@ -196,10 +220,10 @@ const App = () => {
     } else if (pendingPromptType === "News") {
       formattedQuery = `Give me news about ${query}`;
     }
-
+  
     setPendingPromptType(null);
     setQuery("");
-
+  
     setLoading(true);
     try {
       const result = await fetch(
@@ -209,18 +233,28 @@ const App = () => {
           mode: "cors",
         }
       );
-
+  
       if (!result.ok) {
         throw new Error(`HTTP error! status: ${result.status}`);
       }
-
+  
       const data = await result.json();
-      const botMessage = {
-        sender: "bot",
-        text: data[0]?.finalResponse || "No response received.",
-        icon: aiIcon,
-      };
-
+      let botMessage;
+  
+      if (pendingPromptType === "News") {
+        botMessage = {
+          sender: "bot",
+          text: formatNewsResponse(data[0]?.finalResponse || "No news found."),
+          icon: aiIcon,
+        };
+      } else {
+        botMessage = {
+          sender: "bot",
+          text: data[0]?.finalResponse || "No response received.",
+          icon: aiIcon,
+        };
+      }
+  
       setChatHistory((prev) => [...prev, botMessage]);
     } catch (error) {
       const errorMessage = {
@@ -233,6 +267,7 @@ const App = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className={`app-container ${isDarkMode ? "dark-mode" : "light-mode"}`}>
