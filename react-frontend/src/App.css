@@ -10,13 +10,24 @@ body {
 
 .title {
   display: flex;
-  align-items: center;
+  flex-direction: column; /* Stack the icon and text vertically */
+  align-items: center; /* Center-align content horizontally */
+  gap: 5px; /* Add a small gap between the icon and text */
 }
 
 .ai-icon {
   width: 30.25px;
   height: 50px;
-  margin-right: 10px;
+}
+
+.title img {
+  display: block; /* Ensure the image is treated as a block for centering */
+}
+
+.title h1 {
+  margin: 0;
+  font-size: 22px;
+  text-align: center;
 }
 
 .profile-icon {
@@ -537,4 +548,130 @@ input:checked + .slider:before {
 
 .light-mode .chat-container {
   background-color: #ffffff;
+}
+
+/* Recent Conversations */
+.recent-header {
+  margin-top: 0; /* Ensure no margin above */
+  margin-bottom: 10px; /* Small margin below for spacing */
+  font-size: 16px;
+  border-bottom: 1px solid white;
+  padding-bottom: 5px; /* Space for the underline */
+  text-align: center; /* Center-align the text */
+}
+
+.recent-conversations {
+  max-height: 800px; /* Set the max height for the recent conversations */
+  overflow-y: auto; /* Enable vertical scrolling */
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #4caf50 #2a2a2a; /* Custom colors for the scrollbar */
+  padding: 10px; /* Add padding for better spacing */
+  margin: 0; /* Remove default margins */
+}
+
+.recent-conversations h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.no-conversations {
+  margin-top: 0; /* Ensure no unnecessary margin */
+  font-size: 14px;
+  color: #bbb;
+  text-align: center; /* Center-align the "No recent conversations" text */
+}
+
+.recent-conversations::-webkit-scrollbar {
+  width: 10px; /* Scrollbar width */
+}
+
+.recent-conversations::-webkit-scrollbar-track {
+  background: #2a2a2a; /* Scrollbar track color */
+  border-radius: 10px; /* Rounded corners for the track */
+}
+
+.recent-conversations::-webkit-scrollbar-thumb {
+  background: #4caf50; /* Scrollbar thumb color */
+  border-radius: 10px; /* Rounded corners for the thumb */
+  border: 2px solid #2a2a2a; /* Border for better contrast */
+}
+
+.recent-conversations::-webkit-scrollbar-thumb:hover {
+  background: #45a049; /* Hover color for the thumb */
+}
+
+/* Light Mode Scrollbar */
+.light-mode .recent-conversations {
+  scrollbar-color: #007bff #e0e0e0 !important;
+}
+
+.light-mode .recent-conversations::-webkit-scrollbar-track {
+  background: #e0e0e0 !important;
+}
+
+.light-mode .recent-conversations::-webkit-scrollbar-thumb {
+  background: #007bff !important;
+  border: 2px solid #e0e0e0 !important;
+}
+
+.light-mode .recent-conversations::-webkit-scrollbar-thumb:hover {
+  background: #0056b3 !important;
+}
+
+
+.empty-recent {
+  font-size: 14px;
+  color: #bbb;
+}
+
+.conversation-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.conversation-btn {
+  background: none;
+  border: none;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.conversation-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.conversation-info {
+  cursor: pointer;
+  flex: 1;
+}
+
+.conversation-preview {
+  font-size: 14px;
+}
+
+.conversation-preview-text {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: red;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.delete-btn:hover {
+  background: rgba(255, 0, 0, 0.1);
 }
